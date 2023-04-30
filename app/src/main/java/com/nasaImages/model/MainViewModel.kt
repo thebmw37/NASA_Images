@@ -1,5 +1,6 @@
 package com.nasaImages.model
 
+import android.media.Image
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nasaImages.repository.NasaApi
@@ -18,6 +19,17 @@ class MainViewModel : ViewModel() {
     val searchResult: StateFlow<SearchResult?> = _searchResult
     private val _progressIndicatorVisible = MutableStateFlow(false)
     val progressIndicatorVisible: StateFlow<Boolean> = _progressIndicatorVisible
+    private val _imageInfoVisible = MutableStateFlow(false)
+    val imageInfoVisible: StateFlow<Boolean> = _imageInfoVisible
+
+    private val _image = MutableStateFlow("")
+    val image: StateFlow<String> = _image
+    private val _title = MutableStateFlow("")
+    val title: StateFlow<String> = _title
+    private val _description = MutableStateFlow("")
+    val description: StateFlow<String> = _description
+    private val _date = MutableStateFlow("")
+    val date: StateFlow<String> = _date
 
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
@@ -37,6 +49,17 @@ class MainViewModel : ViewModel() {
                 toggleProgressIndicatorVisibility()
             }
         }
+    }
+
+    fun updateImageInfo(imageHref: String, title: String, description: String, date: String) {
+        _image.value = imageHref
+        _title.value = title
+        _description.value = description
+        _date.value = date
+    }
+
+    fun setImageInfoVisible(isVisible: Boolean) {
+        _imageInfoVisible.value = isVisible
     }
 
     private fun toggleProgressIndicatorVisibility() {

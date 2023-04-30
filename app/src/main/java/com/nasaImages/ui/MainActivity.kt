@@ -3,6 +3,7 @@ package com.nasaImages.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -20,6 +21,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.viewModelFactory
 import coil.compose.AsyncImage
 import com.nasaImages.R
 import com.nasaImages.model.Item
@@ -54,6 +56,7 @@ class MainActivity : ComponentActivity() {
                     }
                     ProgressIndicator(viewModel = mainViewModel)
                     ImageList(viewModel = mainViewModel)
+                    ImageInfoModalHolder(viewModel = mainViewModel)
                 }
             }
         }
@@ -129,45 +132,65 @@ fun ImageList(viewModel: MainViewModel) {
     listItems?.let { 
         LazyColumn {
             items(it) { item ->
-                ImageRow(item = item)
+                ImageRow(viewModel = viewModel, item = item)
             }
         }
     }
 }
 
 @Composable
-fun ImageRow(item: Item) {
-    item.data?.get(0)?.title?.let {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .padding(10.dp, 0.dp, 10.dp, 7.dp)
-                .clickable { /* TODO */ },
-            elevation = 10.dp,
-            backgroundColor = White
+fun ImageRow(viewModel: MainViewModel, item: Item) {
+    val itemData = item.data?.get(0)
+    val itemLinks = item.links?.get(0)
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(120.dp)
+            .padding(10.dp, 0.dp, 10.dp, 7.dp)
+            .clickable {
+                viewModel.updateImageInfo(
+                    itemLinks?.href ?: "",
+                    itemData?.title ?: "",
+                    itemData?.description ?: "",
+                    itemData?.dateCreated ?: "")
+                viewModel.setImageInfoVisible(true)
+            },
+        elevation = 10.dp,
+        backgroundColor = White
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
+            Column(modifier = Modifier
+                .width(140.dp)
+                .padding(10.dp, 10.dp, 0.dp, 10.dp)
             ) {
-                item.links?.get(0)?.href?.let {
-                    AsyncImage(
-                        model = it,
-                        contentDescription = "",
-                        modifier = Modifier
-                            .width(120.dp)
-                            .height(80.dp)
-                            .padding(10.dp),
-                        placeholder = painterResource(id = R.drawable.placeholder_icon),
-                        fallback = painterResource(id = R.drawable.placeholder_icon)
-                    )
-                }
-                Text(
-                    text = it
+                AsyncImage(
+                    model = itemLinks?.href ?: "",
+                    contentDescription = "",
+                    modifier = Modifier
+                        .width(120.dp)
+                        .height(80.dp),
+                    placeholder = painterResource(id = R.drawable.placeholder_icon),
+                    fallback = painterResource(id = R.drawable.placeholder_icon)
                 )
             }
+            Text(
+                text = itemData?.title ?: "",
+                modifier = Modifier.padding(0.dp, 10.dp, 10.dp, 10.dp)
+            )
         }
     }
 }
+
+@Composable
+fun ImageInfoModalHolder(viewModel: MainViewModel) {
+    if (viewModel.imageInfoVisible.collectAsState().value) {
+        ImageInfoModal(viewModel = viewModel)
+    }
+}
+
+
