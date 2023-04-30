@@ -14,8 +14,10 @@ class MainViewModel : ViewModel() {
     val searchQuery: StateFlow<String> = _searchQuery
     private val _apiStatus = MutableStateFlow(ApiStatus.NONE)
     val apiStatus: StateFlow<ApiStatus> = _apiStatus
-
-    private var searchResult: SearchResult? = null
+    private val _searchResult: MutableStateFlow<SearchResult?> = MutableStateFlow(null)
+    val searchResult: StateFlow<SearchResult?> = _searchResult
+    private val _progressIndicatorVisible = MutableStateFlow(false)
+    val progressIndicatorVisible: StateFlow<Boolean> = _progressIndicatorVisible
 
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
@@ -23,14 +25,21 @@ class MainViewModel : ViewModel() {
 
     fun performSearch() {
         _apiStatus.value = ApiStatus.IN_PROGRESS
+        toggleProgressIndicatorVisibility()
 
         viewModelScope.launch {
             try {
-                searchResult = NasaApi.retrofitService.getData(searchQuery.value)
+                _searchResult.value = NasaApi.retrofitService.getData(searchQuery.value)
                 _apiStatus.value = ApiStatus.COMPLETE
+                toggleProgressIndicatorVisibility()
             } catch (e: Exception) {
                 _apiStatus.value = ApiStatus.ERROR
+                toggleProgressIndicatorVisibility()
             }
         }
+    }
+
+    private fun toggleProgressIndicatorVisibility() {
+        _progressIndicatorVisible.value = !_progressIndicatorVisible.value
     }
 }
