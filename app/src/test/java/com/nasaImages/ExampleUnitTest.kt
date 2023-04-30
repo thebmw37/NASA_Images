@@ -1,4 +1,4 @@
-package com.example.nasaimages
+package com.nasaImages
 
 import org.junit.Test
 
