@@ -8,20 +8,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-enum class ApiStatus { IN_PROGRESS, COMPLETE, ERROR, NONE }
-
 class MainViewModel : ViewModel() {
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
-    private val _apiStatus = MutableStateFlow(ApiStatus.NONE)
-    val apiStatus: StateFlow<ApiStatus> = _apiStatus
     private val _searchResult: MutableStateFlow<SearchResult?> = MutableStateFlow(null)
     val searchResult: StateFlow<SearchResult?> = _searchResult
+    private val _infoTextVisible = MutableStateFlow(false)
+    val infoTextVisible = _infoTextVisible
     private val _progressIndicatorVisible = MutableStateFlow(false)
     val progressIndicatorVisible: StateFlow<Boolean> = _progressIndicatorVisible
+    private val _currentPage = MutableStateFlow(0)
+    val currentPage = _currentPage
+
     private val _imageInfoVisible = MutableStateFlow(false)
     val imageInfoVisible: StateFlow<Boolean> = _imageInfoVisible
-
     private val _image = MutableStateFlow("")
     val image: StateFlow<String> = _image
     private val _title = MutableStateFlow("")
@@ -36,30 +36,27 @@ class MainViewModel : ViewModel() {
     private val _errorCode = MutableStateFlow("")
     val errorCode: StateFlow<String> = _errorCode
 
-    private val _infoTextVisible = MutableStateFlow(false)
-    val infoTextVisible = _infoTextVisible
-
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
     }
 
-    fun performSearch() {
-        _apiStatus.value = ApiStatus.IN_PROGRESS
+    fun performSearch(pageNumber: Int) {
+        if (pageNumber < 1 || pageNumber > 100) return
+
         _infoTextVisible.value = false
         _searchResult.value = null
         toggleProgressIndicatorVisibility()
 
         viewModelScope.launch {
             try {
-                _searchResult.value = NasaApi.retrofitService.getData(searchQuery.value)
-                _apiStatus.value = ApiStatus.COMPLETE
+                _searchResult.value = NasaApi.retrofitService.getData(searchQuery.value, pageNumber.toString())
+                _currentPage.value = pageNumber
 
                 if (searchResult.value?.collection?.items?.isEmpty() == true)
                     _infoTextVisible.value = true
 
                 toggleProgressIndicatorVisibility()
             } catch (e: Exception) {
-                _apiStatus.value = ApiStatus.ERROR
                 _errorCode.value = e.toString()
                 toggleErrorModalVisibility()
                 toggleProgressIndicatorVisibility()
@@ -80,10 +77,6 @@ class MainViewModel : ViewModel() {
 
     fun setErrorModalVisible(isVisible: Boolean) {
         _errorModalVisible.value = isVisible
-    }
-
-    fun setErrorCode(code: String) {
-        _errorCode.value = code
     }
 
     private fun toggleProgressIndicatorVisibility() {

@@ -21,7 +21,10 @@ private val retrofit = Retrofit.Builder()
 
 interface NwsApiService {
     @GET("/search")
-    suspend fun getData(@Query("q") searchQuery: String): SearchResult
+    suspend fun getData(
+        @Query("q") searchQuery: String,
+        @Query("page") page: String,
+        @Query("media_type") mediaType: String = "image"): SearchResult
 }
 
 object NasaApi {

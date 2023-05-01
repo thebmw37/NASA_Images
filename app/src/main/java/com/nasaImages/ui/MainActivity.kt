@@ -94,7 +94,9 @@ fun SearchBar(viewModel: MainViewModel) {
                 modifier = Modifier.height(20.dp),
                 tint = DarkGray)
         },
-        placeholder = { Text(text = "Search", color = DarkGray) }
+        placeholder = { 
+            Text(text = stringResource(id = R.string.search), color = DarkGray) 
+        }
     )
 }
 
@@ -102,7 +104,7 @@ fun SearchBar(viewModel: MainViewModel) {
 fun SearchButton(viewModel: MainViewModel, focusManager: FocusManager) {
     Button(
         onClick = {
-            viewModel.performSearch()
+            viewModel.performSearch(1)
             focusManager.clearFocus()
         },
         modifier = Modifier
@@ -112,7 +114,7 @@ fun SearchButton(viewModel: MainViewModel, focusManager: FocusManager) {
         colors = ButtonDefaults.buttonColors(backgroundColor = Blue)
     ) {
         Text(
-            text = "Search",
+            text = stringResource(id = R.string.search),
             color = White,
             fontSize = 16.sp
         )
@@ -149,6 +151,56 @@ fun ImageList(viewModel: MainViewModel) {
             items(it) { item ->
                 ImageRow(viewModel = viewModel, item = item)
             }
+            item {
+                NavigationView(viewModel = viewModel)
+            }
+        }
+    }
+}
+
+@Composable
+fun NavigationView(viewModel: MainViewModel) {
+    val currentPage = viewModel.currentPage.collectAsState().value
+    
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Button(
+            onClick = {
+                viewModel.performSearch(currentPage - 1)
+            },
+            modifier = Modifier
+                .height(60.dp)
+                .padding(0.dp, 10.dp, 0.dp, 10.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Blue)
+        ) {
+            Text(
+                text = stringResource(id = R.string.back),
+                color = White,
+                fontSize = 16.sp
+            )
+        }
+        Text(
+            text = stringResource(id = R.string.page_number, currentPage),
+            modifier = Modifier.padding(20.dp, 0.dp, 20.dp, 0.dp),
+            color = DarkGray
+        )
+        Button(
+            onClick = {
+                viewModel.performSearch(currentPage + 1)
+            },
+            modifier = Modifier
+                .height(60.dp)
+                .padding(0.dp, 10.dp, 0.dp, 10.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Blue)
+        ) {
+            Text(
+                text = stringResource(id = R.string.next),
+                color = White,
+                fontSize = 16.sp
+            )
         }
     }
 }

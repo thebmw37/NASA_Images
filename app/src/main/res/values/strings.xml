@@ -9,4 +9,9 @@
     <string name="error_description">Something went wrong, please try again later.</string>
     <string name="error_code">Error: %s</string>
     <string name="no_results">No results for that query!</string>
+    <string name="search">Search</string>
+    <string name="OK">OK</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+    <string name="page_number">Page Number: %s</string>
 </resources>

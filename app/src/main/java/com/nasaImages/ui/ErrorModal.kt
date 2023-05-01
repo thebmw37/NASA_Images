@@ -48,7 +48,7 @@ fun ErrorModal(viewModel: MainViewModel) {
                     colors = ButtonDefaults.buttonColors(backgroundColor = Blue)
                 ) {
                     Text(
-                        text = "OK",
+                        text = stringResource(id = R.string.OK),
                         color = White,
                         fontSize = 16.sp
                     )
