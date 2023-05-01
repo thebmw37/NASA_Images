@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">NASA Images</string>
     <string name="title_activity_main">MainActivity</string>
+
+    <string name="title_string">Title: %s</string>
+    <string name="description_string">Description: %s</string>
+    <string name="date_string">Date: %s</string>
+    <string name="error_title">Uh oh!</string>
+    <string name="error_description">Something went wrong, please try again later.</string>
 </resources>

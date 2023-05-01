@@ -38,24 +38,27 @@ class MainActivity : ComponentActivity() {
             NasaImagesTheme {
                 val focusManager = LocalFocusManager.current
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(LightBackground)
-                        .pointerInput(Unit) {
-                            detectTapGestures { focusManager.clearFocus() }
-                        },
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+                if (!mainViewModel.imageInfoVisible.collectAsState().value) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(LightBackground)
+                            .pointerInput(Unit) {
+                                detectTapGestures { focusManager.clearFocus() }
+                            },
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        SearchBar(viewModel = mainViewModel)
-                        SearchButton(viewModel = mainViewModel, focusManager = focusManager)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            SearchBar(viewModel = mainViewModel)
+                            SearchButton(viewModel = mainViewModel, focusManager = focusManager)
+                        }
+                        ProgressIndicator(viewModel = mainViewModel)
+                        ImageList(viewModel = mainViewModel)
                     }
-                    ProgressIndicator(viewModel = mainViewModel)
-                    ImageList(viewModel = mainViewModel)
+                } else {
                     ImageInfoModalHolder(viewModel = mainViewModel)
                 }
             }
@@ -153,7 +156,8 @@ fun ImageRow(viewModel: MainViewModel, item: Item) {
                     itemLinks?.href ?: "",
                     itemData?.title ?: "",
                     itemData?.description ?: "",
-                    itemData?.dateCreated ?: "")
+                    itemData?.dateCreated ?: ""
+                )
                 viewModel.setImageInfoVisible(true)
             },
         elevation = 10.dp,
