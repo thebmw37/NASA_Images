@@ -36,18 +36,27 @@ class MainViewModel : ViewModel() {
     private val _errorCode = MutableStateFlow("")
     val errorCode: StateFlow<String> = _errorCode
 
+    private val _infoTextVisible = MutableStateFlow(false)
+    val infoTextVisible = _infoTextVisible
+
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
     }
 
     fun performSearch() {
         _apiStatus.value = ApiStatus.IN_PROGRESS
+        _infoTextVisible.value = false
+        _searchResult.value = null
         toggleProgressIndicatorVisibility()
 
         viewModelScope.launch {
             try {
                 _searchResult.value = NasaApi.retrofitService.getData(searchQuery.value)
                 _apiStatus.value = ApiStatus.COMPLETE
+
+                if (searchResult.value?.collection?.items?.isEmpty() == true)
+                    _infoTextVisible.value = true
+
                 toggleProgressIndicatorVisibility()
             } catch (e: Exception) {
                 _apiStatus.value = ApiStatus.ERROR

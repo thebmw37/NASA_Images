@@ -3,7 +3,6 @@ package com.nasaImages.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -19,9 +18,9 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.viewModelFactory
 import coil.compose.AsyncImage
 import com.nasaImages.R
 import com.nasaImages.model.Item
@@ -55,6 +54,7 @@ class MainActivity : ComponentActivity() {
                             SearchBar(viewModel = mainViewModel)
                             SearchButton(viewModel = mainViewModel, focusManager = focusManager)
                         }
+                        InfoText(viewModel = mainViewModel)
                         ProgressIndicator(viewModel = mainViewModel)
                         ImageList(viewModel = mainViewModel)
                         ErrorModalHolder(viewModel = mainViewModel)
@@ -84,6 +84,7 @@ fun SearchBar(viewModel: MainViewModel) {
             unfocusedLabelColor = Blue,
             unfocusedIndicatorColor = Blue,
             cursorColor = Blue
+
         ),
         singleLine = true,
         leadingIcon = {
@@ -114,6 +115,16 @@ fun SearchButton(viewModel: MainViewModel, focusManager: FocusManager) {
             text = "Search",
             color = White,
             fontSize = 16.sp
+        )
+    }
+}
+
+@Composable
+fun InfoText(viewModel: MainViewModel) {
+    if (viewModel.infoTextVisible.collectAsState().value) {
+        Text(
+            text = stringResource(id = R.string.no_results),
+            color = DarkGray
         )
     }
 }

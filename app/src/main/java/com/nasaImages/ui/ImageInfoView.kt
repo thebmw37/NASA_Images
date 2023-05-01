@@ -42,7 +42,7 @@ fun ImageInfoView(viewModel: MainViewModel) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(0.dp, 30.dp, 0.dp, 0.dp)
+                .padding(0.dp, 45.dp, 0.dp, 0.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
