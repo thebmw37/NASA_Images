@@ -57,6 +57,7 @@ class MainActivity : ComponentActivity() {
                         }
                         ProgressIndicator(viewModel = mainViewModel)
                         ImageList(viewModel = mainViewModel)
+                        ErrorModalHolder(viewModel = mainViewModel)
                     }
                 } else {
                     ImageInfoModalHolder(viewModel = mainViewModel)
@@ -193,7 +194,14 @@ fun ImageRow(viewModel: MainViewModel, item: Item) {
 @Composable
 fun ImageInfoModalHolder(viewModel: MainViewModel) {
     if (viewModel.imageInfoVisible.collectAsState().value) {
-        ImageInfoModal(viewModel = viewModel)
+        ImageInfoView(viewModel = viewModel)
+    }
+}
+
+@Composable
+fun ErrorModalHolder(viewModel: MainViewModel) {
+    if (viewModel.errorModalVisible.collectAsState().value) {
+        ErrorModal(viewModel = viewModel)
     }
 }
 

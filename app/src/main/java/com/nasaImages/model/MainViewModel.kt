@@ -31,6 +31,11 @@ class MainViewModel : ViewModel() {
     private val _date = MutableStateFlow("")
     val date: StateFlow<String> = _date
 
+    private val _errorModalVisible = MutableStateFlow(false)
+    val errorModalVisible = _errorModalVisible
+    private val _errorCode = MutableStateFlow("")
+    val errorCode: StateFlow<String> = _errorCode
+
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
     }
@@ -46,6 +51,8 @@ class MainViewModel : ViewModel() {
                 toggleProgressIndicatorVisibility()
             } catch (e: Exception) {
                 _apiStatus.value = ApiStatus.ERROR
+                _errorCode.value = e.toString()
+                toggleErrorModalVisibility()
                 toggleProgressIndicatorVisibility()
             }
         }
@@ -62,7 +69,19 @@ class MainViewModel : ViewModel() {
         _imageInfoVisible.value = isVisible
     }
 
+    fun setErrorModalVisible(isVisible: Boolean) {
+        _errorModalVisible.value = isVisible
+    }
+
+    fun setErrorCode(code: String) {
+        _errorCode.value = code
+    }
+
     private fun toggleProgressIndicatorVisibility() {
         _progressIndicatorVisible.value = !_progressIndicatorVisible.value
+    }
+
+    private fun toggleErrorModalVisibility() {
+        _errorModalVisible.value = !_errorModalVisible.value
     }
 }

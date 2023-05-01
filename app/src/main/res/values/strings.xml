@@ -7,4 +7,5 @@
     <string name="date_string">Date: %s</string>
     <string name="error_title">Uh oh!</string>
     <string name="error_description">Something went wrong, please try again later.</string>
+    <string name="error_code">Error: %s</string>
 </resources>

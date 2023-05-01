@@ -18,7 +18,7 @@ import com.nasaImages.ui.theme.DarkGray
 import com.nasaImages.ui.theme.LightBackground
 
 @Composable
-fun ImageInfoModal(viewModel: MainViewModel) {
+fun ImageInfoView(viewModel: MainViewModel) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = LightBackground
