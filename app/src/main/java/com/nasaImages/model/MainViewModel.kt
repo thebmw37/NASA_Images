@@ -1,6 +1,5 @@
 package com.nasaImages.model
 
-import android.media.Image
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nasaImages.repository.NasaApi

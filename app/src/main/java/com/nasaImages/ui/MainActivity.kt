@@ -47,13 +47,7 @@ class MainActivity : ComponentActivity() {
                             },
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            SearchBar(viewModel = mainViewModel)
-                            SearchButton(viewModel = mainViewModel, focusManager = focusManager)
-                        }
+                        SearchLayout(viewModel = mainViewModel, focusManager = focusManager)
                         InfoText(viewModel = mainViewModel)
                         ProgressIndicator(viewModel = mainViewModel)
                         ImageList(viewModel = mainViewModel)
@@ -64,6 +58,17 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+}
+
+@Composable
+fun SearchLayout(viewModel: MainViewModel, focusManager: FocusManager) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        SearchBar(viewModel = viewModel)
+        SearchButton(viewModel = viewModel, focusManager = focusManager)
     }
 }
 
@@ -159,53 +164,6 @@ fun ImageList(viewModel: MainViewModel) {
 }
 
 @Composable
-fun NavigationView(viewModel: MainViewModel) {
-    val currentPage = viewModel.currentPage.collectAsState().value
-    
-    Row(
-        modifier = Modifier.fillMaxSize(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Button(
-            onClick = {
-                viewModel.performSearch(currentPage - 1)
-            },
-            modifier = Modifier
-                .height(60.dp)
-                .padding(0.dp, 10.dp, 0.dp, 10.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = Blue)
-        ) {
-            Text(
-                text = stringResource(id = R.string.back),
-                color = White,
-                fontSize = 16.sp
-            )
-        }
-        Text(
-            text = stringResource(id = R.string.page_number, currentPage),
-            modifier = Modifier.padding(20.dp, 0.dp, 20.dp, 0.dp),
-            color = DarkGray
-        )
-        Button(
-            onClick = {
-                viewModel.performSearch(currentPage + 1)
-            },
-            modifier = Modifier
-                .height(60.dp)
-                .padding(0.dp, 10.dp, 0.dp, 10.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = Blue)
-        ) {
-            Text(
-                text = stringResource(id = R.string.next),
-                color = White,
-                fontSize = 16.sp
-            )
-        }
-    }
-}
-
-@Composable
 fun ImageRow(viewModel: MainViewModel, item: Item) {
     val itemData = item.data?.get(0)
     val itemLinks = item.links?.get(0)
@@ -255,9 +213,49 @@ fun ImageRow(viewModel: MainViewModel, item: Item) {
 }
 
 @Composable
-fun ImageInfoModalHolder(viewModel: MainViewModel) {
-    if (viewModel.imageInfoVisible.collectAsState().value) {
-        ImageInfoView(viewModel = viewModel)
+fun NavigationView(viewModel: MainViewModel) {
+    val currentPage = viewModel.currentPage.collectAsState().value
+    
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Button(
+            onClick = {
+                viewModel.performSearch(currentPage - 1)
+            },
+            modifier = Modifier
+                .height(60.dp)
+                .padding(0.dp, 10.dp, 0.dp, 10.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Blue)
+        ) {
+            Text(
+                text = stringResource(id = R.string.back),
+                color = White,
+                fontSize = 16.sp
+            )
+        }
+        Text(
+            text = stringResource(id = R.string.page_number, currentPage),
+            modifier = Modifier.padding(20.dp, 0.dp, 20.dp, 0.dp),
+            color = DarkGray
+        )
+        Button(
+            onClick = {
+                viewModel.performSearch(currentPage + 1)
+            },
+            modifier = Modifier
+                .height(60.dp)
+                .padding(0.dp, 10.dp, 0.dp, 10.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Blue)
+        ) {
+            Text(
+                text = stringResource(id = R.string.next),
+                color = White,
+                fontSize = 16.sp
+            )
+        }
     }
 }
 
@@ -268,4 +266,9 @@ fun ErrorModalHolder(viewModel: MainViewModel) {
     }
 }
 
-
+@Composable
+fun ImageInfoModalHolder(viewModel: MainViewModel) {
+    if (viewModel.imageInfoVisible.collectAsState().value) {
+        ImageInfoView(viewModel = viewModel)
+    }
+}
