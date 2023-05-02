@@ -1,10 +1,14 @@
 package com.nasaImages.ui
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
 import android.os.Bundle
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.nasaImages.R
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +29,19 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction().replace(R.id.fragment_container, selectedFragment).commit()
 
             true
+        }
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        hideSoftwareKeyboard(this)
+        return super.onTouchEvent(event)
+    }
+
+    private fun hideSoftwareKeyboard(activity: Activity) {
+        val inputMethodManager =
+            activity.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        activity.currentFocus?.let {
+            inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
         }
     }
 }

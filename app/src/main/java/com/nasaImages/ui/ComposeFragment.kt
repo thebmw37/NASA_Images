@@ -47,10 +47,7 @@ class ComposeFragment : Fragment() {
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(LightBackground)
-                                .pointerInput(Unit) {
-                                    detectTapGestures { focusManager.clearFocus() }
-                                },
+                                .background(LightBackground),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             SearchLayout(viewModel = mainViewModel, focusManager = focusManager)

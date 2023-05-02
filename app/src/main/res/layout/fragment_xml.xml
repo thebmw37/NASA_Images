@@ -7,41 +7,49 @@
     android:background="@color/lightBackground"
     tools:context=".ui.XmlFragment">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
+        android:id="@+id/search_linear_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal" >
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
 
         <EditText
             android:id="@+id/search_bar"
             android:layout_width="270dp"
             android:layout_height="60dp"
-            android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="3dp"
             android:layout_marginBottom="10dp"
-            android:textSize="16sp"
+            android:layout_weight="0.5"
+            android:background="@color/white"
+            android:drawableStart="@drawable/scaled_search_icon"
+            android:drawablePadding="15dp"
+            android:drawableTint="@color/darkGray"
             android:hint="@string/search"
             android:inputType="textEmailAddress"
-            android:background="@color/white"
-            android:layout_weight="0.5"
-            android:drawableStart="@drawable/scaled_search_icon"
-            android:drawableTint="@color/darkGray"
-            android:drawablePadding="15dp"
             android:paddingLeft="13dp"
-            android:paddingTop="1dp"/>
+            android:paddingTop="1dp"
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/search_button"
             android:layout_width="wrap_content"
             android:layout_height="70dp"
-            android:layout_marginTop="20dp"
             android:layout_marginStart="5dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
-            android:text="@string/search"
+            android:layout_weight="0"
             android:backgroundTint="@color/blue"
-            android:textAllCaps="false"
-            android:layout_weight="0" />
+            android:text="@string/search"
+            android:textAllCaps="false" />
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/results_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/search_linear_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

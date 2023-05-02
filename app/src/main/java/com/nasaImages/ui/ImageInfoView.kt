@@ -66,7 +66,7 @@ fun ImageInfoView(viewModel: MainViewModel) {
             Text(text = stringResource(
                 id = R.string.date_string,
                 viewModel.date.collectAsState().value),
-                modifier = Modifier.padding(20.dp, 0.dp, 20.dp, 10.dp)
+                modifier = Modifier.padding(20.dp, 0.dp, 20.dp, 80.dp)
             )
 
         }
