@@ -1,23 +1,29 @@
 package com.nasaImages.model
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.nasaImages.repository.NasaApi
+import com.nasaImages.repository.NasaImagesRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+class MainViewModel(
+        private val repository: NasaImagesRepository,
+        private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
+
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
     private val _searchResult: MutableStateFlow<SearchResult?> = MutableStateFlow(null)
     val searchResult: StateFlow<SearchResult?> = _searchResult
     private val _infoTextVisible = MutableStateFlow(false)
-    val infoTextVisible = _infoTextVisible
+    val infoTextVisible: StateFlow<Boolean> = _infoTextVisible
     private val _progressIndicatorVisible = MutableStateFlow(false)
     val progressIndicatorVisible: StateFlow<Boolean> = _progressIndicatorVisible
     private val _currentPage = MutableStateFlow(0)
-    val currentPage = _currentPage
+    val currentPage: StateFlow<Int> = _currentPage
 
     private val _imageInfoVisible = MutableStateFlow(false)
     val imageInfoVisible: StateFlow<Boolean> = _imageInfoVisible
@@ -31,7 +37,7 @@ class MainViewModel : ViewModel() {
     val date: StateFlow<String> = _date
 
     private val _errorModalVisible = MutableStateFlow(false)
-    val errorModalVisible = _errorModalVisible
+    val errorModalVisible: StateFlow<Boolean> = _errorModalVisible
     private val _errorCode = MutableStateFlow("")
     val errorCode: StateFlow<String> = _errorCode
 
@@ -46,20 +52,22 @@ class MainViewModel : ViewModel() {
         _searchResult.value = null
         toggleProgressIndicatorVisibility()
 
-        viewModelScope.launch {
-            try {
-                _searchResult.value = NasaApi.retrofitService.getData(searchQuery.value, pageNumber.toString())
-                _currentPage.value = pageNumber
+        CoroutineScope(coroutineDispatcher).launch {
+            repository.search(searchQuery.value, pageNumber.toString())
+                .catch {
+                    _errorCode.value = it.toString()
+                    toggleErrorModalVisibility()
+                    toggleProgressIndicatorVisibility()
+                }
+                .collect {
+                    _searchResult.value = it
+                    _currentPage.value = pageNumber
 
-                if (searchResult.value?.collection?.items?.isEmpty() == true)
-                    _infoTextVisible.value = true
+                    if (searchResult.value?.collection?.items?.isEmpty() == true)
+                        _infoTextVisible.value = true
 
-                toggleProgressIndicatorVisibility()
-            } catch (e: Exception) {
-                _errorCode.value = e.toString()
-                toggleErrorModalVisibility()
-                toggleProgressIndicatorVisibility()
-            }
+                    toggleProgressIndicatorVisibility()
+                }
         }
     }
 

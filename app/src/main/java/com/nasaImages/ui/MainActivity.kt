@@ -25,13 +25,15 @@ import coil.compose.AsyncImage
 import com.nasaImages.R
 import com.nasaImages.model.Item
 import com.nasaImages.model.MainViewModel
+import com.nasaImages.repository.NasaApiService
+import com.nasaImages.repository.NasaImagesRepositoryImpl
 import com.nasaImages.ui.theme.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val mainViewModel = MainViewModel()
+        val mainViewModel = MainViewModel(NasaImagesRepositoryImpl())
 
         setContent {
             NasaImagesTheme {

@@ -19,7 +19,7 @@ private val retrofit = Retrofit.Builder()
     .baseUrl(API_ROOT)
     .build()
 
-interface NwsApiService {
+interface NasaApiService {
     @GET("/search")
     suspend fun getData(
         @Query("q") searchQuery: String,
@@ -28,5 +28,5 @@ interface NwsApiService {
 }
 
 object NasaApi {
-    val retrofitService: NwsApiService by lazy { retrofit.create(NwsApiService::class.java) }
+    val retrofitService: NasaApiService by lazy { retrofit.create(NasaApiService::class.java) }
 }
