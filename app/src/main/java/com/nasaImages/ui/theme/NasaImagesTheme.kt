@@ -9,9 +9,6 @@ private val LightColorPalette = lightColors(
     background = LightBackground
 )
 
-// TODO: Dark Mode
-//private val DarkColorPalette = darkColors()
-
 @Composable
 fun NasaImagesTheme(content: @Composable () -> Unit) {
     val systemUiController = rememberSystemUiController()

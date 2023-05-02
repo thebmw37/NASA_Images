@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/xml"
+        android:icon="@drawable/xml"
+        android:title="@string/xml" />
+
+    <item
+        android:id="@+id/compose"
+        android:icon="@drawable/jetpack"
+        android:title="@string/compose" />
+</menu>

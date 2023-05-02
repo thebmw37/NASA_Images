@@ -14,4 +14,6 @@
     <string name="back">Back</string>
     <string name="next">Next</string>
     <string name="page_number">Page Number: %s</string>
+    <string name="xml">XML</string>
+    <string name="compose">Compose</string>
 </resources>
