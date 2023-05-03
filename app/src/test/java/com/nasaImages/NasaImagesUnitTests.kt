@@ -2,6 +2,7 @@ package com.nasaImages
 
 import com.nasaImages.model.MainViewModel
 import com.nasaImages.repository.MockNasaImagesRepository
+import com.nasaImages.repository.NasaImagesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
@@ -14,12 +15,14 @@ class NasaImagesUnitTests {
     @OptIn(ExperimentalCoroutinesApi::class)
     val testDispatcher = StandardTestDispatcher()
     private lateinit var viewModel: MainViewModel
+    private lateinit var repository: NasaImagesRepository
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = MainViewModel(MockNasaImagesRepository(), StandardTestDispatcher())
+        repository = MockNasaImagesRepository()
+        viewModel = MainViewModel(repository, StandardTestDispatcher())
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -49,6 +52,52 @@ class NasaImagesUnitTests {
             viewModel.performSearch(101)
         }
         assertEquals(100, viewModel.currentPage.value)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun testSearchUiWithZeroSizeResult() {
+        runTest {
+            (repository as MockNasaImagesRepository).setEmptySearchResult()
+            viewModel.performSearch(1)
+            assertTrue(viewModel.progressIndicatorVisible.value)
+            assertFalse(viewModel.infoTextVisible.value)
+            assertFalse(viewModel.navigationVisible.value)
+        }
+
+        assertFalse(viewModel.progressIndicatorVisible.value)
+        assertTrue(viewModel.infoTextVisible.value)
+        assertFalse(viewModel.navigationVisible.value)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun testSearchUiWithNormalResult() {
+        runTest {
+            (repository as MockNasaImagesRepository).setNormalSearchResult()
+            viewModel.performSearch(1)
+            assertTrue(viewModel.progressIndicatorVisible.value)
+            assertFalse(viewModel.infoTextVisible.value)
+            assertFalse(viewModel.navigationVisible.value)
+        }
+
+        assertFalse(viewModel.progressIndicatorVisible.value)
+        assertFalse(viewModel.infoTextVisible.value)
+        assertTrue(viewModel.navigationVisible.value)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun testSearchUiWithErrorResult() {
+        runTest {
+            (repository as MockNasaImagesRepository).setErrorResult()
+            viewModel.performSearch(1)
+        }
+
+        assertTrue(viewModel.errorModalVisible.value)
+        assertFalse(viewModel.progressIndicatorVisible.value)
+        assertFalse(viewModel.infoTextVisible.value)
+        assertFalse(viewModel.navigationVisible.value)
     }
 
 }

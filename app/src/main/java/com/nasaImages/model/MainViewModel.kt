@@ -24,6 +24,8 @@ class MainViewModel(
     val progressIndicatorVisible: StateFlow<Boolean> = _progressIndicatorVisible
     private val _currentPage = MutableStateFlow(0)
     val currentPage: StateFlow<Int> = _currentPage
+    private val _navigationVisible = MutableStateFlow(false)
+    val navigationVisible: StateFlow<Boolean> = _navigationVisible
 
     private val _imageInfoVisible = MutableStateFlow(false)
     val imageInfoVisible: StateFlow<Boolean> = _imageInfoVisible
@@ -56,6 +58,7 @@ class MainViewModel(
             repository.search(searchQuery.value, pageNumber.toString())
                 .catch {
                     _errorCode.value = it.toString()
+                    _navigationVisible.value = false
                     toggleErrorModalVisibility()
                     toggleProgressIndicatorVisibility()
                 }
@@ -63,8 +66,12 @@ class MainViewModel(
                     _searchResult.value = it
                     _currentPage.value = pageNumber
 
-                    if (searchResult.value?.collection?.items?.isEmpty() == true)
+                    if (searchResult.value?.collection?.items?.isEmpty() == true) {
                         _infoTextVisible.value = true
+                        _navigationVisible.value = false
+                    } else {
+                        _navigationVisible.value = true
+                    }
 
                     toggleProgressIndicatorVisibility()
                 }

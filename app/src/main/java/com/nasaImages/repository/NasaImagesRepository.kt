@@ -1,7 +1,7 @@
 package com.nasaImages.repository
 
+import com.nasaImages.model.*
 import com.nasaImages.model.Collection
-import com.nasaImages.model.SearchResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -25,7 +25,31 @@ class NasaImagesRepositoryImpl : NasaImagesRepository {
 }
 
 class MockNasaImagesRepository: NasaImagesRepository {
+
+    var valuteToEmit: SearchResult? = SearchResult(Collection(listOf()))
+
+    fun setNormalSearchResult() {
+        valuteToEmit =
+            SearchResult(
+                Collection(
+                    listOf(
+                        Item(listOf(Link("href")),
+                             listOf(Data("title", "description", "dateCreated"))
+                        )
+                    )
+                )
+            )
+    }
+
+    fun setEmptySearchResult() {
+        valuteToEmit = SearchResult(Collection(listOf()))
+    }
+
+    fun setErrorResult() {
+        valuteToEmit = null
+    }
+
     override fun search(query: String, pageNumber: String) = flow {
-        emit(SearchResult(Collection(listOf())))
+        emit(valuteToEmit ?: throw Exception(""))
     }
 }

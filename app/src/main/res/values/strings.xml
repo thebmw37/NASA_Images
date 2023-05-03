@@ -16,6 +16,6 @@
     <string name="page_number">Page Number: %s</string>
     <string name="xml">XML</string>
     <string name="compose">Compose</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="error_dialog_tag">xmlErrorDialog</string>
+    <string name="xml_image_info_tag">xmlImageInfoFragment</string>
 </resources>
