@@ -1,7 +1,9 @@
 package com.nasaImages.ui
 
 import android.os.Bundle
+import android.window.OnBackInvokedDispatcher
 import androidx.activity.ComponentActivity
+import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,6 +14,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
@@ -28,10 +32,12 @@ import com.nasaImages.model.MainViewModel
 import com.nasaImages.repository.NasaImagesRepositoryImpl
 import com.nasaImages.ui.theme.*
 
+val mainViewModel = MainViewModel(NasaImagesRepositoryImpl())
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val mainViewModel = MainViewModel(NasaImagesRepositoryImpl())
+
         setContent {
             NasaImagesTheme {
                 val focusManager = LocalFocusManager.current
@@ -55,6 +61,10 @@ class MainActivity : ComponentActivity() {
                     ImageInfoModalHolder(viewModel = mainViewModel)
                 }
             }
+        }
+
+        onBackPressedDispatcher.addCallback {
+            mainViewModel.setImageInfoVisible(false)
         }
     }
 }
@@ -149,16 +159,17 @@ fun ProgressIndicator(viewModel: MainViewModel) {
 
 @Composable
 fun ImageList(viewModel: MainViewModel) {
-    val listItems = viewModel.searchResult.collectAsState().value?.collection?.items
+    val listItems = rememberSaveable { mutableStateOf<List<Item>>(listOf()) }
+    viewModel.searchResult.collectAsState().value?.collection?.items?.let {
+        listItems.value = it
+    }
 
-    listItems?.let {
-        LazyColumn {
-            items(it) { item ->
-                ImageRow(viewModel = viewModel, item = item)
-            }
-            item {
-                NavigationView(viewModel = viewModel)
-            }
+    LazyColumn {
+        items(listItems.value) { item ->
+            ImageRow(viewModel = viewModel, item = item)
+        }
+        item {
+            NavigationView(viewModel = viewModel)
         }
     }
 }

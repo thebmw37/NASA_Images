@@ -1,6 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.NASAImages" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:textColorHint">@color/darkGray</item>
     </style>
 </resources>
