@@ -1,7 +1,6 @@
 package com.nasaImages.ui
 
 import android.os.Bundle
-import android.window.OnBackInvokedDispatcher
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
@@ -34,7 +33,6 @@ import com.nasaImages.model.Item
 import com.nasaImages.model.MainViewModel
 import com.nasaImages.repository.NasaImagesRepositoryImpl
 import com.nasaImages.ui.theme.*
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 val mainViewModel = MainViewModel(NasaImagesRepositoryImpl())
