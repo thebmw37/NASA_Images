@@ -16,3 +16,5 @@ The app has 3 main modules: model, repository and ui. Model contains data models
 
 -----How to Run-----
 The app should run in any recent version of Android Studio. I ran it on Android Studio Chipmunk | 2022.2.1 Patch 2. MinSdk is 21.
+
+If you have any questions please text/call me: (650)-223-3874
