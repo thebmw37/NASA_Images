@@ -10,11 +10,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +34,8 @@ import com.nasaImages.model.Item
 import com.nasaImages.model.MainViewModel
 import com.nasaImages.repository.NasaImagesRepositoryImpl
 import com.nasaImages.ui.theme.*
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 val mainViewModel = MainViewModel(NasaImagesRepositoryImpl())
 
@@ -39,6 +44,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val listState = rememberLazyListState()
+
             NasaImagesTheme {
                 val focusManager = LocalFocusManager.current
                 if (!mainViewModel.imageInfoVisible.collectAsState().value) {
@@ -54,7 +61,7 @@ class MainActivity : ComponentActivity() {
                         SearchLayout(viewModel = mainViewModel, focusManager = focusManager)
                         InfoText(viewModel = mainViewModel)
                         ProgressIndicator(viewModel = mainViewModel)
-                        ImageList(viewModel = mainViewModel)
+                        ImageList(viewModel = mainViewModel, listState = listState)
                         ErrorModalHolder(viewModel = mainViewModel)
                     }
                 } else {
@@ -158,18 +165,18 @@ fun ProgressIndicator(viewModel: MainViewModel) {
 }
 
 @Composable
-fun ImageList(viewModel: MainViewModel) {
+fun ImageList(viewModel: MainViewModel, listState: LazyListState) {
     val listItems = rememberSaveable { mutableStateOf<List<Item>>(listOf()) }
     viewModel.searchResult.collectAsState().value?.collection?.items?.let {
         listItems.value = it
     }
 
-    LazyColumn {
+    LazyColumn(state = listState) {
         items(listItems.value) { item ->
             ImageRow(viewModel = viewModel, item = item)
         }
         item {
-            NavigationView(viewModel = viewModel)
+            NavigationView(viewModel = viewModel, listState = listState)
         }
     }
 }
@@ -224,20 +231,24 @@ fun ImageRow(viewModel: MainViewModel, item: Item) {
 }
 
 @Composable
-fun NavigationView(viewModel: MainViewModel) {
+fun NavigationView(viewModel: MainViewModel, listState: LazyListState) {
     val currentPage = viewModel.currentPage.collectAsState().value
+    val coroutineScope = rememberCoroutineScope()
 
     if (viewModel.navigationVisible.collectAsState().value) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(0.dp, 0.dp, 0.dp, 60.dp),
+                .padding(0.dp, 0.dp, 0.dp, 20.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
                 onClick = {
                     viewModel.performSearch(currentPage - 1)
+                    coroutineScope.launch {
+                        listState.scrollToItem(0)
+                    }
                 },
                 modifier = Modifier
                     .height(60.dp)
@@ -258,6 +269,9 @@ fun NavigationView(viewModel: MainViewModel) {
             Button(
                 onClick = {
                     viewModel.performSearch(currentPage + 1)
+                    coroutineScope.launch {
+                        listState.scrollToItem(0)
+                    }
                 },
                 modifier = Modifier
                     .height(60.dp)
