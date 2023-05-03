@@ -6,6 +6,7 @@
         <entry key="app/src/main/res/drawable/scaled_search_icon.xml" value="0.213" />
         <entry key="app/src/main/res/drawable/search_icon.xml" value="0.2255" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.42980072463768115" />
+        <entry key="app/src/main/res/layout/fragment_results_list_item.xml" value="0.5787878787878787" />
         <entry key="app/src/main/res/layout/fragment_xml.xml" value="0.5494791666666666" />
         <entry key="app/src/main/res/layout/nasa_search_view.xml" value="0.37135416666666665" />
         <entry key="app/src/main/res/menu/menu.xml" value="0.37135416666666665" />

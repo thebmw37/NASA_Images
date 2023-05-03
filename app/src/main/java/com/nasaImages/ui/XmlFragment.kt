@@ -1,5 +1,6 @@
 package com.nasaImages.ui
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.drawable.ScaleDrawable
 import android.os.Bundle
@@ -14,8 +15,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nasaImages.R
+import com.nasaImages.model.Item
 import com.nasaImages.model.MainViewModel
 import com.nasaImages.repository.NasaImagesRepositoryImpl
 import kotlinx.coroutines.coroutineScope
@@ -25,6 +28,8 @@ import kotlinx.coroutines.launch
 class XmlFragment : Fragment() {
 
     private lateinit var mainViewModel: MainViewModel
+    private var items: MutableList<Item> = mutableListOf()
+    private var adapter: ResultsAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +43,7 @@ class XmlFragment : Fragment() {
         val searchTextView = view.findViewById<EditText>(R.id.search_bar)
         val searchButton = view.findViewById<Button>(R.id.search_button)
         val resultsRecyclerView = view.findViewById<RecyclerView>(R.id.results_recycler_view)
+
         mainViewModel = MainViewModel(NasaImagesRepositoryImpl())
 
         searchButton.setOnClickListener {
@@ -46,13 +52,20 @@ class XmlFragment : Fragment() {
             hideSoftwareKeyboard(requireActivity())
         }
 
+        adapter = ResultsAdapter(items, requireContext())
+        resultsRecyclerView.adapter = adapter
+        resultsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
         observeSearchDataUpdates()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun observeSearchDataUpdates() {
         lifecycleScope.launch {
             mainViewModel.searchResult.collectLatest {
-                println(it)
+                items.clear()
+                items.addAll(it?.collection?.items ?: listOf())
+                adapter?.notifyDataSetChanged()
             }
         }
     }
